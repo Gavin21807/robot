@@ -16,6 +16,7 @@ import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
@@ -58,8 +59,8 @@ public class Testboard extends TimedRobot {
     DoubleSolenoid  Solenoid2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 6, 3);
     PIDController Pid = new PIDController(KP, KI, KD);
    RelativeEncoder spark2Encoder = Spark2.getEncoder();
-    DoubleSolenoid  Solenoid1 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-    DoubleSolenoid  Solenoid2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+    // DoubleSolenoid  Solenoid1 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    // DoubleSolenoid  Solenoid2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
 // robot init is the robot starting up
 // the controllers are assigned here 
@@ -68,8 +69,8 @@ public class Testboard extends TimedRobot {
     m_controller1 = new XboxController(0);
     m_controller2 = new XboxController(1);
 
-  Spark1.setSmartCurrentLimit(100);
-
+    Spark1.setSmartCurrentLimit(20);
+    Talon1.configPeakCurrentLimit(20);
   
 
     //The sparks are set to coast.
