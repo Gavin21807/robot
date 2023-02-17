@@ -69,7 +69,7 @@ public class Testboard extends TimedRobot {
     m_controller1 = new XboxController(0);
     m_controller2 = new XboxController(1);
 
-    Spark1.setSmartCurrentLimit(20);
+    Spark2.setSmartCurrentLimit(20);
     Talon1.configPeakCurrentLimit(20);
   
 
@@ -84,6 +84,8 @@ public class Testboard extends TimedRobot {
     NetworkTable  Pidtable;
  
     CameraServer.startAutomaticCapture(0);
+    SmartDashboard.putData("PID", Pid);
+    spark2Encoder.setPosition(0);
  }
 
 
@@ -97,26 +99,35 @@ public class Testboard extends TimedRobot {
   double Spark2Speed = m_controller1.getRightY();
   double Talon1Speed = m_controller2.getLeftY();
   Double Talon2Speed = m_controller2.getRightY();
+
+  SmartDashboard.putNumber("MotorPos", spark2Encoder.getPosition());
   // Using if statements to set motor speed
   // These if statements are for the Spark controllers 
-  if (Spark1Speed > 0.1) {
-        Spark1.set(Spark1Speed);
-    }
-    else if (Spark1Speed < -0.1) {
-        Spark1.set(Spark1Speed);
-    }
-    else {
-        Spark1.set(0);
-    }
-   if (Spark2Speed > 0.1) {
-        Spark2.set(Spark2Speed);
-    }
-    else if (Spark2Speed < -0.1) {
-        Spark2.set(Spark2Speed);
-    }
-    else {
-        Spark2.set(0);
-    }
+   
+//   if (m_controller1.getAButton()){
+   Spark2.set(Pid.calculate(spark2Encoder.getPosition(), Pid.getSetpoint()));
+//   }
+//   else if (m_controller1.getBButton()){
+//     Spark2.set(.1);
+//   }
+//     if (Spark1Speed > 0.1) {
+//             Spark1.set(Spark1Speed);
+//         }
+//         else if (Spark1Speed < -0.1) {
+//             Spark1.set(Spark1Speed);
+//         }
+//         else {
+//             Spark1.set(0);
+//         }
+//        if (Spark2Speed > 0.1) {
+//             Spark2.set(Spark2Speed);
+//         }
+//         else if (Spark2Speed < -0.1) {
+//             Spark2.set(Spark2Speed);
+//         }
+//         else {
+//             Spark2.set(0);
+//         }
    
    // these if statements are for the TalonSRX controllers
     if (Talon1Speed > 0.1){
