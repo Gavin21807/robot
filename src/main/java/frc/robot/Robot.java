@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -52,6 +56,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    NamedCommands.registerCommand("intake", m_intake.grabNote());
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -95,7 +100,7 @@ public class Robot extends TimedRobot {
     enableDrive.onTrue(m_driveCommand);
     autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand));
     //autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand.andThen(m_driveCommand)));
-    leftTrigger.whileTrue( m_intake.grabNote(m_controller1.getLeftTriggerAxis()));
+    leftTrigger.whileTrue(m_intake.grabNote());
     if (enableDrive.getAsBoolean()) 
     {
       m_enableDrive = true;
@@ -165,8 +170,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() 
-  {}
+  {
+    getAutonomousCommand().schedule();
+  }
+      public Command getAutonomousCommand() {
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
 
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    }
   
   @Override
   public void teleopInit() {

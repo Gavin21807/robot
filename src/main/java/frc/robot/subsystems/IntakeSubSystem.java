@@ -43,12 +43,12 @@ public class IntakeSubSystem extends SubsystemBase {
         // Do stuff
     }
 
-    public Command grabNote(double intakeSpeed)
+    public Command grabNote()
     {
         
         return new FunctionalCommand(
             () -> {},
-            () -> m_intake.set(intakeSpeed),
+            () -> m_intake.set(.5),
             interrupted -> m_intake.set(0),
             () -> false);
     }
