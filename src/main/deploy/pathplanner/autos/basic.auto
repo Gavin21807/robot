@@ -6,15 +6,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Example Path"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "intake"
+            "waitTime": 3.0
           }
         }
       ]

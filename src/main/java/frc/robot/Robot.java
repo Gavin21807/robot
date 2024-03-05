@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.AimbotCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.*;
 
 /**
@@ -37,7 +38,7 @@ public class Robot extends TimedRobot {
   boolean m_enableDrive = true;
 
   DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
-  IntakeSubSystem m_intake = new IntakeSubSystem(10, 11, 12);
+  IntakeSubSystem m_intake = new IntakeSubSystem(10, 12, 13, 11);
   public CommandXboxController m_controller1 = new CommandXboxController(0);
   //CommandXboxController m_controller2 = new CommandXboxController(1);
 
@@ -50,13 +51,14 @@ public class Robot extends TimedRobot {
 
   Command m_aimbotCommand = new AimbotCommand(m_swerve);
   Command m_driveCommand = new DriveCommand(m_swerve, true, m_controller1);
+  Command m_IntakeCommand = new IntakeCommand(m_intake);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    NamedCommands.registerCommand("intake", m_intake.grabNote());
+    NamedCommands.registerCommand("intake", m_IntakeCommand);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -100,7 +102,7 @@ public class Robot extends TimedRobot {
     enableDrive.onTrue(m_driveCommand);
     autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand));
     //autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand.andThen(m_driveCommand)));
-    leftTrigger.whileTrue(m_intake.grabNote());
+    leftTrigger.whileTrue(m_IntakeCommand);
     if (enableDrive.getAsBoolean()) 
     {
       m_enableDrive = true;
@@ -162,8 +164,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
       m_swerve.m_ahrs.zeroYaw();
       m_swerve.homeSwerve();
-      
-       
+      AutoBuilder.buildAuto("basic");
     }
   }
 
