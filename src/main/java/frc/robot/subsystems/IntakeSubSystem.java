@@ -11,8 +11,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class IntakeSubSystem extends SubsystemBase {
     public final CANSparkMax m_intake;
-    private final CANSparkMax m_shooter_1;
-    private final CANSparkMax m_shooter_2;
+    public final CANSparkMax m_shooter_1;
+    public final CANSparkMax m_shooter_2;
     public final CANSparkMax m_midintake;
     private boolean IntakeRunning;
 

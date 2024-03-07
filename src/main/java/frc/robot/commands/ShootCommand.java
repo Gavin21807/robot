@@ -5,22 +5,18 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.IntakeSubSystem;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /** An example command that uses an example subsystem. */
-public class IntakeCommand extends Command {
+public class ShootCommand extends Command {
   private final IntakeSubSystem subSystem;
   
   /**
-   * Creates a new IntakeCommand.
+   * Creates a new ShootCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeCommand(IntakeSubSystem m_subSystem) {
+  public ShootCommand(IntakeSubSystem m_subSystem) {
 
     subSystem = m_subSystem;
     addRequirements(m_subSystem);
@@ -28,25 +24,26 @@ public class IntakeCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     
   }
-  WaitCommand waitCommand = new WaitCommand(5.0);
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    subSystem.m_intake.set(1);
-    subSystem.m_midintake.set(.2);
+    subSystem.m_shooter_1.set(1);
+    subSystem.m_shooter_2.set(1);
+    subSystem.m_midintake.set(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    subSystem.m_intake.set(0);
+   subSystem.m_shooter_1.set(0);
+    subSystem.m_shooter_2.set(0);
     subSystem.m_midintake.set(0);
   }
 
