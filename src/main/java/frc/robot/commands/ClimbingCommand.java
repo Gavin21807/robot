@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.IntakeSubSystem;
+import frc.robot.subsystems.ClimbingSystem;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,15 +12,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /** An example command that uses an example subsystem. */
-public class IntakeCommand extends Command {
-  private final IntakeSubSystem subSystem;
+public class ClimbingCommand extends Command {
+  private final ClimbingSystem subSystem;
   
   /**
-   * Creates a new IntakeCommand.
+   * Creates a new ClimbingSystem.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeCommand(IntakeSubSystem m_subSystem) {
+  public ClimbingCommand(ClimbingSystem m_subSystem) {
 
     subSystem = m_subSystem;
     addRequirements(m_subSystem);
@@ -32,8 +32,8 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize()
   {
-    subSystem.m_intake.set(1);
-    subSystem.m_midintake.set(-1);
+    subSystem.leftCLimber.set(-.5);
+    subSystem.rightCLimber.set(-.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -45,8 +45,8 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) 
   {
-    subSystem.m_intake.set(0);
-    subSystem.m_midintake.set(0);
+    subSystem.leftCLimber.set(0);
+    subSystem.rightCLimber.set(0);
   }
 
   // Returns true when the command should end.

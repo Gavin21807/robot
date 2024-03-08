@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.nio.file.Path;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -20,8 +23,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.AimbotCommand;
+import frc.robot.commands.ClimbingCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.*;
 
 /**
@@ -36,11 +41,12 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
  
   boolean m_enableDrive = true;
-
+  PathPlannerPath Path = PathPlannerPath.fromPathFile("Example Path");
   DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
-  IntakeSubSystem m_intake = new IntakeSubSystem(10, 12, 13, 11);
+  IntakeSubSystem m_intake = new IntakeSubSystem(9, 11, 12, 10);
+  ClimbingSystem m_Climber = new ClimbingSystem(13, 14);
   public CommandXboxController m_controller1 = new CommandXboxController(0);
-  //CommandXboxController m_controller2 = new CommandXboxController(1);
+  CommandXboxController m_controller2 = new CommandXboxController(1);
 
   LEDSubsystem m_leds = new LEDSubsystem();
 
@@ -50,8 +56,10 @@ public class Robot extends TimedRobot {
 
 
   Command m_aimbotCommand = new AimbotCommand(m_swerve);
-  Command m_driveCommand = new DriveCommand(m_swerve, true, m_controller1);
+  Command m_driveCommand = new DriveCommand(m_swerve, false, m_controller1);
   Command m_IntakeCommand = new IntakeCommand(m_intake);
+  Command m_ShootCommand = new ShootCommand(m_intake);
+  Command m_ClimbingCommand = new ClimbingCommand(m_Climber);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -59,13 +67,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     NamedCommands.registerCommand("intake", m_IntakeCommand);
+    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     // Controller 1
     final Trigger enableDrive = m_controller1.b();
-    final Trigger coast = m_controller1.x();
-    final Trigger turbo = m_controller1.rightTrigger();
+    final Trigger shoot = m_controller1.rightTrigger();
     final Trigger autoAim = m_controller1.a();
     //final Trigger Drive = m_controller1.rightBumper();
     final Trigger homeSwerve = m_controller1.y();
@@ -81,8 +89,9 @@ public class Robot extends TimedRobot {
     // final Trigger low = m_controller2.a();
     //final Trigger leftBumper = m_controller2.leftBumper();
     // final Trigger rightBumper = m_controller2.rightBumper();
-    final Trigger leftTrigger = m_controller1.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.5);
-    // final Trigger rightTrigger = m_controller2.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.5);
+    final Trigger Climb = m_controller2.x();
+    final Trigger leftTrigger = m_controller2.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.5);
+    final Trigger rightTrigger = m_controller2.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.5);
     // final Trigger retractHome = m_controller2.x();
     // final Trigger up = m_controller2.pov(0);
     // final Trigger down = m_controller2.pov(180);
@@ -97,12 +106,13 @@ public class Robot extends TimedRobot {
     homeSwerve.onTrue(new InstantCommand(() -> m_swerve.homeSwerve()));
    
     //brake.onTrue(m_swerve.setBrakeModeCmd());
-    coast.onTrue(m_swerve.setCoastModeCmd());
-
+    
+    Climb.whileTrue(m_ClimbingCommand);
     enableDrive.onTrue(m_driveCommand);
     autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand));
     //autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand.andThen(m_driveCommand)));
     leftTrigger.whileTrue(m_IntakeCommand);
+    rightTrigger.whileTrue(m_ShootCommand);
     if (enableDrive.getAsBoolean()) 
     {
       m_enableDrive = true;
@@ -158,29 +168,27 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_swerve.homeSwerve();
+    m_swerve.m_ahrs.zeroYaw();
+        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = new InstantCommand(() -> m_swerve.drive(1.5, 0, 0, false, 0.02)).andThen(
+                          new WaitCommand(2).andThen(
+                          new InstantCommand(() -> m_swerve.drive(0, 0, 0, false, 0.02))));
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-      m_swerve.m_ahrs.zeroYaw();
-      m_swerve.homeSwerve();
-      AutoBuilder.buildAuto("basic");
     }
+    
+      
+      
+      // AutoBuilder.buildAuto("basic");
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() 
-  {
-    getAutonomousCommand().schedule();
+  public void autonomousPeriodic() {
+    // AutoBuilder.followPath(Path);
   }
-      public Command getAutonomousCommand() {
-        // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-        // Create a path following command using AutoBuilder. This will also trigger event markers.
-        return AutoBuilder.followPath(path);
-    }
   
   @Override
   public void teleopInit() {
@@ -206,7 +214,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() 
+  {
+    
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

@@ -25,8 +25,8 @@ public class IntakeSubSystem extends SubsystemBase {
         m_midintake = new CANSparkMax(midtakeMotorID, MotorType.kBrushless);
 
         m_intake.setSmartCurrentLimit(Configuration.Neo550Limit);
-        m_shooter_1.setSmartCurrentLimit(Configuration.NeoLimit);
-        m_shooter_2.setSmartCurrentLimit(Configuration.NeoLimit);
+        m_shooter_1.setSmartCurrentLimit(30);
+        m_shooter_2.setSmartCurrentLimit(30);
         m_midintake.setSmartCurrentLimit(Configuration.Neo550Limit);
 
         /*

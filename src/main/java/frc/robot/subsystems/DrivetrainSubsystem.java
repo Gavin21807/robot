@@ -182,6 +182,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
   public void periodic(){
     updateOdometry();
+    for (int i = 0; i < 4; i++) {
+      SmartDashboard.putNumber("AbsPos_" + i, m_modules[i].getAbsPos());
+    }
   }
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
