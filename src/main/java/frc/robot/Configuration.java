@@ -47,7 +47,7 @@ public class Configuration {
      * I = P / V
      *******************************************/
     static public int NeoLimit = 80;
-    static public int Neo550Limit = 20;
+    static public int Neo550Limit = 22;
     static public int BagMotorLimit = 30; // Max power is 149 W, 12.4 A
     static public int M775ProLimit = 15; // Max power 347 W, 28.9 A
     static public int CIMSLimit = 28; // Max power 337 W, 28.0 A

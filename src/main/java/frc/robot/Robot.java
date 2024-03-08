@@ -26,6 +26,7 @@ import frc.robot.commands.AimbotCommand;
 import frc.robot.commands.ClimbingCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MoveBotCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.*;
 
@@ -43,7 +44,7 @@ public class Robot extends TimedRobot {
   boolean m_enableDrive = true;
   PathPlannerPath Path = PathPlannerPath.fromPathFile("Example Path");
   DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
-  IntakeSubSystem m_intake = new IntakeSubSystem(9, 11, 12, 10);
+  IntakeSubSystem m_intake = new IntakeSubSystem(9, 11, 10);
   ClimbingSystem m_Climber = new ClimbingSystem(13, 14);
   public CommandXboxController m_controller1 = new CommandXboxController(0);
   CommandXboxController m_controller2 = new CommandXboxController(1);
@@ -57,7 +58,7 @@ public class Robot extends TimedRobot {
 
   Command m_aimbotCommand = new AimbotCommand(m_swerve);
   Command m_driveCommand = new DriveCommand(m_swerve, false, m_controller1);
-  Command m_IntakeCommand = new IntakeCommand(m_intake);
+  Command m_IntakeCommand = new IntakeCommand(m_intake, m_controller2);
   Command m_ShootCommand = new ShootCommand(m_intake);
   Command m_ClimbingCommand = new ClimbingCommand(m_Climber);
   /**
@@ -82,6 +83,7 @@ public class Robot extends TimedRobot {
   
     
     // Controller 2
+    final Trigger reverseMidtake = m_controller1.b();
     // final Trigger gripper_control = m_controller2.leftTrigger();
     // final Trigger extend_control = m_controller2.rightTrigger();
     // final Trigger high = m_controller2.y();
@@ -113,6 +115,7 @@ public class Robot extends TimedRobot {
     //autoAim.onTrue(m_swerve.setBrakeModeCmd().andThen(m_aimbotCommand.andThen(m_driveCommand)));
     leftTrigger.whileTrue(m_IntakeCommand);
     rightTrigger.whileTrue(m_ShootCommand);
+    reverseMidtake.whileTrue(m_ShootCommand);
     if (enableDrive.getAsBoolean()) 
     {
       m_enableDrive = true;
@@ -170,10 +173,10 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_swerve.homeSwerve();
     m_swerve.m_ahrs.zeroYaw();
-        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_autonomousCommand = new InstantCommand(() -> m_swerve.drive(1.5, 0, 0, false, 0.02)).andThen(
-                          new WaitCommand(2).andThen(
-                          new InstantCommand(() -> m_swerve.drive(0, 0, 0, false, 0.02))));
+    m_autonomousCommand = new MoveBotCommand(m_swerve);
+    // m_autonomousCommand = new InstantCommand(() -> m_swerve.drive(1.5, 0, 0, false, 0.02)).andThen(
+    //                       new WaitCommand(2).andThen(
+    //                       new InstantCommand(() -> m_swerve.drive(0, 0, 0, false, 0.02))));
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

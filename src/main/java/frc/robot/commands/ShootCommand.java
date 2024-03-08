@@ -34,10 +34,10 @@ public class ShootCommand extends Command {
   public void initialize()
   {
     subSystem.m_shooter_1.set(-1);
-    subSystem.m_shooter_2.set(1);
+    // subSystem.m_shooter_2.set(1);
     subSystem.m_midintake.set(-.5);
     subSystem.m_shooter_1.setIdleMode(IdleMode.kBrake);
-    subSystem.m_shooter_2.setIdleMode(IdleMode.kBrake);
+    // subSystem.m_shooter_2.setIdleMode(IdleMode.kBrake);
     subSystem.m_midintake.setIdleMode(IdleMode.kBrake);
   }
 
@@ -50,7 +50,7 @@ public class ShootCommand extends Command {
   public void end(boolean interrupted) 
   {
    subSystem.m_shooter_1.set(0);
-    subSystem.m_shooter_2.set(0);
+    // subSystem.m_shooter_2.set(0);
     subSystem.m_midintake.set(0);
   }
 

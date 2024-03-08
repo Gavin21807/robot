@@ -12,21 +12,21 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class IntakeSubSystem extends SubsystemBase {
     public final CANSparkMax m_intake;
     public final CANSparkMax m_shooter_1;
-    public final CANSparkMax m_shooter_2;
+    // public final CANSparkMax m_shooter_2;
     public final CANSparkMax m_midintake;
     private boolean IntakeRunning;
 
     private double m_rotateSpeed = 0;
     /** Creates a new DriveSubsystem. */
-    public IntakeSubSystem(int intakeMotorID, int shooterMotorID_1, int shooterMotorID_2, int midtakeMotorID) {
+    public IntakeSubSystem(int intakeMotorID, int shooterMotorID_1, int midtakeMotorID) {
         m_intake = new CANSparkMax(intakeMotorID, MotorType.kBrushless);
         m_shooter_1 = new CANSparkMax(shooterMotorID_1, MotorType.kBrushless);
-        m_shooter_2 = new CANSparkMax(shooterMotorID_2, MotorType.kBrushless);
+        // m_shooter_2 = new CANSparkMax(shooterMotorID_2, MotorType.kBrushless);
         m_midintake = new CANSparkMax(midtakeMotorID, MotorType.kBrushless);
 
         m_intake.setSmartCurrentLimit(Configuration.Neo550Limit);
         m_shooter_1.setSmartCurrentLimit(30);
-        m_shooter_2.setSmartCurrentLimit(30);
+        // m_shooter_2.setSmartCurrentLimit(30);
         m_midintake.setSmartCurrentLimit(Configuration.Neo550Limit);
 
         /*
