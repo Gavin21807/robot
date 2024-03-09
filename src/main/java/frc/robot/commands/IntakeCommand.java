@@ -22,12 +22,13 @@ public class IntakeCommand extends Command {
    * @param subsystem The subsystem used by this command.
    * 
    */
-  public IntakeCommand(IntakeSubSystem m_subSystem, XboxController m_controller) {
+  boolean reverse;
+  public IntakeCommand(IntakeSubSystem m_subSystem, boolean reverse) {
     subSystem = m_subSystem;
     addRequirements(m_subSystem);
-    XboxController controller = m_controller;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    boolean reverse = false;
+   
   }
 
   // Called when the command is initially scheduled.
@@ -44,13 +45,13 @@ public class IntakeCommand extends Command {
   @Override
   public void execute() {
   
-    // if (reverse){
-    //   subSystem.m_midintake.set(1);
-    // }
-    // else 
-    // {
-    //   subSystem.m_midintake.set(-1);
-    // }
+    if (reverse){
+      subSystem.m_midintake.set(1);
+    }
+    else 
+    {
+      subSystem.m_midintake.set(-1);
+    }
   }
 
   // Called once the command ends or is interrupted.

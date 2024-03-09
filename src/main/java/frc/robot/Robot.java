@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
  
   boolean m_enableDrive = true;
+  boolean m_reverseMidtake = false;
   PathPlannerPath Path = PathPlannerPath.fromPathFile("Example Path");
   DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
   IntakeSubSystem m_intake = new IntakeSubSystem(9, 11, 10);
@@ -58,7 +59,7 @@ public class Robot extends TimedRobot {
 
   Command m_aimbotCommand = new AimbotCommand(m_swerve);
   Command m_driveCommand = new DriveCommand(m_swerve, false, m_controller1);
-  Command m_IntakeCommand = new IntakeCommand(m_intake, m_controller2);
+  Command m_IntakeCommand = new IntakeCommand(m_intake, m_reverseMidtake);
   Command m_ShootCommand = new ShootCommand(m_intake);
   Command m_ClimbingCommand = new ClimbingCommand(m_Climber);
   /**
@@ -116,9 +117,19 @@ public class Robot extends TimedRobot {
     leftTrigger.whileTrue(m_IntakeCommand);
     rightTrigger.whileTrue(m_ShootCommand);
     reverseMidtake.whileTrue(m_ShootCommand);
+    
     if (enableDrive.getAsBoolean()) 
     {
       m_enableDrive = true;
+    }
+   
+    if (reverseMidtake.getAsBoolean()) 
+    {
+      m_reverseMidtake = true;
+    }
+    else 
+    {
+      m_reverseMidtake = false;
     }
     // leftTrigger.whileFalse(new InstantCommand(() -> m_intake.doneLoading()));
     //rightTrigger.onTrue(m_intake.shootNote());
